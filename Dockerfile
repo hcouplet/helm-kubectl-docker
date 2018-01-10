@@ -3,20 +3,21 @@ FROM alpine:3.4
 MAINTAINER Sergii Nuzhdin <ipaq.lw@gmail.com>
 
 ENV KUBE_LATEST_VERSION=v1.7.11
-ENV HELM_VERSION=v2.7.2
-ENV HELM_FILENAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
-
 
 RUN apk add --update ca-certificates \
  && apk add --update -t deps curl  \
- && apk add --update gettext tar gzip go \
+ && apk add --update gettext tar gzip go git \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
- && curl -L https://storage.googleapis.com/kubernetes-helm/${HELM_FILENAME} | tar xz && mv linux-amd64/helm /bin/helm && rm -rf linux-amd64 \
- && chmod +x /usr/local/bin/kubectl \
- && go get -d github.com/mayflower/docker-ls/cli/... \
- && go generate github.com/mayflower/docker-ls/lib/... \
- && go install github.com/mayflower/docker-ls/cli/... \
- && apk del --purge deps \
- && rm /var/cache/apk/*
+ && rm -rf linux-amd64 \
+ && chmod +x /usr/local/bin/kubectl
 
-CMD ["helm"]
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN go get -d github.com/mayflower/docker-ls/cli/...
+
+RUN go generate github.com/mayflower/docker-ls/lib/...
+
+RUN go install github.com/mayflower/docker-ls/cli/...
+
+RUN apk del --purge deps && rm /var/cache/apk/*
