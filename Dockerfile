@@ -13,9 +13,9 @@ RUN apk add --update ca-certificates \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
  && curl -L https://storage.googleapis.com/kubernetes-helm/${HELM_FILENAME} | tar xz && mv linux-amd64/helm /bin/helm && rm -rf linux-amd64 \
  && chmod +x /usr/local/bin/kubectl \
- && go get -d github.com/mayflower/docker-ls/cli/...
- && go generate github.com/mayflower/docker-ls/lib/...
- && go install github.com/mayflower/docker-ls/cli/...
+ && go get -d github.com/mayflower/docker-ls/cli/... \
+ && go generate github.com/mayflower/docker-ls/lib/... \
+ && go install github.com/mayflower/docker-ls/cli/... \
  && apk del --purge deps \
  && rm /var/cache/apk/*
 
